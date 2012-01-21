@@ -88,7 +88,8 @@
 
 - (void)backgroundLoadThread:(NSURL *)url {
     @autoreleasepool {
-        [NSThread sleepForTimeInterval:3];
+        // simulate a lag...
+        // [NSThread sleepForTimeInterval:1];
         NSData * imageData = [NSData dataWithContentsOfURL:url];
         UIImage * theImage = [[UIImage alloc] initWithData:imageData];
         if ([[NSThread currentThread] isCancelled]) {
