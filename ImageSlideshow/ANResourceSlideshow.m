@@ -17,6 +17,9 @@
 #else
         imageURLs = urls;
 #endif
+        CGSize size = self.view.bounds.size;
+        scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
+        [scrollView setContentSize:CGSizeMake([urls count] * size.width, size.height)];
     }
     return self;
 }
@@ -27,6 +30,13 @@
 }
 
 - (void)resetToPage:(NSUInteger)pageIndex {
+    // unload the current image views
+    for (UIView * view in imageViews) {
+        if ([view superview]) {
+            [view removeFromSuperview];
+        }
+    }
+    [imageViews removeAllObjects];
     
 }
 

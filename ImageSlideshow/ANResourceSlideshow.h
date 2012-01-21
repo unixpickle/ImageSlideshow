@@ -16,6 +16,7 @@
     
     NSUInteger imageViewIndex;
     NSMutableArray * imageViews;
+    BOOL wasStatusHidden;
 }
 
 - (id)initWithImageURLs:(NSArray *)urls;
