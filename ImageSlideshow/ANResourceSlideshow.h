@@ -19,6 +19,9 @@
 }
 
 - (id)initWithImageURLs:(NSArray *)urls;
+
+- (CGRect)frameForPageIndex:(NSUInteger)pageIndex;
 - (void)resetToPage:(NSUInteger)pageIndex;
+- (void)loadCachesAroundCurrentPage;
 
 @end
