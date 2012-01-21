@@ -8,6 +8,12 @@
 
 #import "ANResourceSlideshow.h"
 
+@interface ANResourceSlideshow (Private)
+
+- (NSUInteger)firstCacheIndexForIndex:(NSUInteger)index;
+
+@end
+
 @implementation ANResourceSlideshow
 
 - (id)initWithImageURLs:(NSArray *)urls {
@@ -23,6 +29,7 @@
         [scrollView setPagingEnabled:YES];
         [scrollView setShowsHorizontalScrollIndicator:NO];
         [scrollView setScrollEnabled:YES];
+        [scrollView setDelegate:self];
         imageViews = [[NSMutableArray alloc] initWithCapacity:5];
         [self.view addSubview:scrollView];
         
@@ -31,12 +38,9 @@
     return self;
 }
 
-- (CGRect)frameForPageIndex:(NSUInteger)pageIndex {
-    return CGRectMake(pageIndex * scrollView.frame.size.width, 0,
-                      scrollView.frame.size.width, scrollView.frame.size.height);
-}
-
 - (void)resetToPage:(NSUInteger)pageIndex {
+    currentPage = pageIndex;
+
     // unload the current image views
     for (UIView * view in imageViews) {
         if ([view superview]) {
@@ -45,10 +49,99 @@
     }
     [imageViews removeAllObjects];
     
-    NSUInteger firstIndex = 0;
-    if (currentImage > 2) {
-        firstIndex = currentImage - 2;
+    NSUInteger firstIndex = [self firstCacheIndexForIndex:currentPage];
+    firstImageIndex = firstIndex;
+    
+    for (int i = 0; i < 5 && firstIndex + i < [imageURLs count]; i++) {
+        NSUInteger index = firstIndex + i;
+        CGRect imageFrame = [self frameForPageIndex:index];
+        ANAsyncImageView * imageView = [[ANAsyncImageView alloc] initWithFrame:imageFrame];
+        [imageView loadImageURL:[imageURLs objectAtIndex:index]];
+        [scrollView addSubview:imageView];
+        [imageViews addObject:imageView];
+#if !__has_feature(objc_arc)
+        [imageView release];
+#endif
     }
+}
+
+- (void)loadCachesAroundCurrentPage {
+    NSUInteger firstIndex = [self firstCacheIndexForIndex:currentPage];
+    if (firstIndex == firstImageIndex) {
+        return; // already at current page.
+    }
+    
+    NSRange reuseRange = NSMakeRange(0, [imageViews count]);
+    if (firstIndex < firstImageIndex) {
+        NSInteger numKeep = (NSInteger)[imageViews count] - (NSInteger)(firstImageIndex - firstIndex);
+        if (numKeep > 0) {
+            NSUInteger numReuse = [imageViews count] - numKeep;
+            reuseRange = NSMakeRange([imageViews count] - numReuse, numReuse);
+        }
+        
+        // move the end (reuse) chunk to the beginning
+        NSArray * subArray = [imageViews subarrayWithRange:reuseRange];
+        [imageViews removeObjectsInRange:reuseRange];
+        for (NSUInteger i = 0; i < [subArray count]; i++) {
+            [imageViews insertObject:[subArray objectAtIndex:i] atIndex:i];
+        }
+        
+        // move reuse range to reflect our moved data
+        reuseRange = NSMakeRange(0, [subArray count]);
+    } else if (firstIndex > firstImageIndex) {
+        NSInteger numKeep = (NSInteger)[imageViews count] - (NSInteger)(firstIndex - firstImageIndex);
+        if (numKeep > 0) {
+            NSUInteger numReuse = [imageViews count] - numKeep;
+            reuseRange = NSMakeRange(0, numReuse);
+        }
+        
+        // move the beginning (reuse) chunk to the end
+        NSArray * subArray = [imageViews subarrayWithRange:reuseRange];
+        [imageViews removeObjectsInRange:reuseRange];
+        [imageViews addObjectsFromArray:subArray];
+        
+        // move reuse range to reflect our moved data
+        reuseRange = NSMakeRange([imageViews count] - [subArray count], [subArray count]);
+    }
+    firstImageIndex = firstIndex;
+    for (NSUInteger i = reuseRange.location; i < reuseRange.location + reuseRange.length; i++) {
+        ANAsyncImageView * imageView = [imageViews objectAtIndex:i];
+        [imageView setFrame:[self frameForPageIndex:(firstIndex + i)]];
+        [imageView loadImageURL:[imageURLs objectAtIndex:(firstIndex + i)]];
+    }
+}
+
+- (void)dealloc {
+    [imageURLs release];
+    [imageViews release];
+    [scrollView release];
+    [super dealloc];
+}
+
+#pragma mark - ScrollView -
+
+- (void)scrollViewDidScroll:(UIScrollView *)aScrollView {
+    CGPoint offset = [scrollView contentOffset];
+    int pageIndex = (int)round(offset.x / scrollView.frame.size.width);
+    if (pageIndex != currentPage) {
+        currentPage = pageIndex;
+        [self loadCachesAroundCurrentPage];
+    }
+}
+
+- (CGRect)frameForPageIndex:(NSUInteger)pageIndex {
+    return CGRectMake(pageIndex * scrollView.frame.size.width, 0,
+                      scrollView.frame.size.width, scrollView.frame.size.height);
+}
+
+#pragma mark - Private -
+
+- (NSUInteger)firstCacheIndexForIndex:(NSUInteger)index {
+    NSUInteger firstIndex = 0;
+    if (currentPage > 2) {
+        firstIndex = currentPage - 2;
+    }
+    
     if (firstIndex + 5 > [imageURLs count] && firstIndex > 0) {
         NSUInteger overflow = (firstIndex + 5) - [imageURLs count];
         if (firstIndex >= overflow) {
@@ -57,31 +150,7 @@
             firstIndex = 0;
         }
     }
-    for (int i = 0; i < 5; i++) {
-        NSUInteger index = firstIndex + i;
-        if (index == pageIndex) {
-            imageViewIndex = i;
-        }
-        CGRect imageFrame = [self frameForPageIndex:index];
-        ANAsyncImageView * imageView = [[ANAsyncImageView alloc] initWithFrame:imageFrame];
-        if (index < [imageURLs count]) {
-            [imageView loadImageURL:[imageURLs objectAtIndex:index]];
-            [scrollView addSubview:imageView];
-        } else break;
-        [imageViews addObject:imageView];
-    }
-    currentImage = pageIndex;
-}
-
-- (void)loadCachesAroundCurrentPage {
-    
-}
-
-- (void)dealloc {
-    [imageURLs release];
-    [imageViews release];
-    [scrollView release];
-    [super dealloc];
+    return firstIndex;
 }
 
 @end

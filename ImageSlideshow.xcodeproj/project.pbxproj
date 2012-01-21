@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA83CD0314CB7E4E0042B21D /* slide7.png in Resources */ = {isa = PBXBuildFile; fileRef = FA83CD0014CB7E4E0042B21D /* slide7.png */; };
+		FA83CD0414CB7E4E0042B21D /* slide6.png in Resources */ = {isa = PBXBuildFile; fileRef = FA83CD0114CB7E4E0042B21D /* slide6.png */; };
+		FA83CD0514CB7E4E0042B21D /* slide5.png in Resources */ = {isa = PBXBuildFile; fileRef = FA83CD0214CB7E4E0042B21D /* slide5.png */; };
 		FA85A65E14CB27010018F18D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA85A65D14CB27010018F18D /* UIKit.framework */; };
 		FA85A66014CB27010018F18D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA85A65F14CB27010018F18D /* Foundation.framework */; };
 		FA85A66214CB27010018F18D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA85A66114CB27010018F18D /* CoreGraphics.framework */; };
@@ -22,6 +25,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FA83CD0014CB7E4E0042B21D /* slide7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = slide7.png; sourceTree = "<group>"; };
+		FA83CD0114CB7E4E0042B21D /* slide6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = slide6.png; sourceTree = "<group>"; };
+		FA83CD0214CB7E4E0042B21D /* slide5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = slide5.png; sourceTree = "<group>"; };
 		FA85A65914CB27010018F18D /* ImageSlideshow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageSlideshow.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA85A65D14CB27010018F18D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		FA85A65F14CB27010018F18D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -100,6 +106,9 @@
 		FA85A66414CB27010018F18D /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				FA83CD0014CB7E4E0042B21D /* slide7.png */,
+				FA83CD0114CB7E4E0042B21D /* slide6.png */,
+				FA83CD0214CB7E4E0042B21D /* slide5.png */,
 				FA85A67414CB30DF0018F18D /* slide4.png */,
 				FA85A67514CB30DF0018F18D /* slide3.png */,
 				FA85A67614CB30DF0018F18D /* slide2.png */,
@@ -167,6 +176,9 @@
 				FA85A67914CB30DF0018F18D /* slide3.png in Resources */,
 				FA85A67A14CB30DF0018F18D /* slide2.png in Resources */,
 				FA85A67B14CB30DF0018F18D /* slide1.png in Resources */,
+				FA83CD0314CB7E4E0042B21D /* slide7.png in Resources */,
+				FA83CD0414CB7E4E0042B21D /* slide6.png in Resources */,
+				FA83CD0514CB7E4E0042B21D /* slide5.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -282,6 +294,7 @@
 				FA85A67314CB27010018F18D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

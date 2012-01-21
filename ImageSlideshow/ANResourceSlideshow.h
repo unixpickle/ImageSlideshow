@@ -9,13 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "ANAsyncImageView.h"
 
-@interface ANResourceSlideshow : UIViewController {
+@interface ANResourceSlideshow : UIViewController <UIScrollViewDelegate> {
     NSArray * imageURLs;
     UIScrollView * scrollView;
     
-    NSUInteger currentImage;
+    NSUInteger currentPage;
     
-    NSUInteger imageViewIndex;
+    NSUInteger firstImageIndex;
     NSMutableArray * imageViews;
     BOOL wasStatusHidden;
 }
