@@ -20,6 +20,7 @@
         CGSize size = self.view.bounds.size;
         scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
         [scrollView setContentSize:CGSizeMake([urls count] * size.width, size.height)];
+        imageViews = [[NSMutableArray alloc] initWithCapacity:5];
     }
     return self;
 }
