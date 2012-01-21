@@ -99,6 +99,9 @@
             return;
         }
         [self performSelectorOnMainThread:@selector(loadComplete:) withObject:theImage waitUntilDone:NO];
+#if !__has_feature(objc_arc)
+        [theImage release];
+#endif
     }
 }
 
