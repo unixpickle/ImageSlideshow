@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ANAsyncImageView : UIImageView {
+@interface ANAsyncImageView : UIView {
     UIActivityIndicatorView * activityIndicator;
     UIImage * image;
     

@@ -70,6 +70,7 @@
 }
 
 - (void)drawRect:(CGRect)rect {
+    [super drawRect:rect];
     CGContextClearRect(UIGraphicsGetCurrentContext(), self.bounds);
     [image drawInRect:self.bounds];
 }
@@ -87,6 +88,7 @@
 
 - (void)backgroundLoadThread:(NSURL *)url {
     @autoreleasepool {
+        [NSThread sleepForTimeInterval:3];
         NSData * imageData = [NSData dataWithContentsOfURL:url];
         UIImage * theImage = [[UIImage alloc] initWithData:imageData];
         if ([[NSThread currentThread] isCancelled]) {

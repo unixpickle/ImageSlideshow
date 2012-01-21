@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ANAsyncImageView.h"
 
 @interface ANResourceSlideshow : UIViewController {
     NSArray * imageURLs;

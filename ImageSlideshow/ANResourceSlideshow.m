@@ -20,7 +20,13 @@
         CGSize size = self.view.bounds.size;
         scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
         [scrollView setContentSize:CGSizeMake([urls count] * size.width, size.height)];
+        [scrollView setPagingEnabled:YES];
+        [scrollView setShowsHorizontalScrollIndicator:NO];
+        [scrollView setScrollEnabled:YES];
         imageViews = [[NSMutableArray alloc] initWithCapacity:5];
+        [self.view addSubview:scrollView];
+        
+        [self resetToPage:0];
     }
     return self;
 }
@@ -39,6 +45,32 @@
     }
     [imageViews removeAllObjects];
     
+    NSUInteger firstIndex = 0;
+    if (currentImage > 2) {
+        firstIndex = currentImage - 2;
+    }
+    if (firstIndex + 5 > [imageURLs count] && firstIndex > 0) {
+        NSUInteger overflow = (firstIndex + 5) - [imageURLs count];
+        if (firstIndex >= overflow) {
+            firstIndex -= overflow;
+        } else {
+            firstIndex = 0;
+        }
+    }
+    for (int i = 0; i < 5; i++) {
+        NSUInteger index = firstIndex + i;
+        if (index == pageIndex) {
+            imageViewIndex = i;
+        }
+        CGRect imageFrame = [self frameForPageIndex:index];
+        ANAsyncImageView * imageView = [[ANAsyncImageView alloc] initWithFrame:imageFrame];
+        if (index < [imageURLs count]) {
+            [imageView loadImageURL:[imageURLs objectAtIndex:index]];
+            [scrollView addSubview:imageView];
+        } else break;
+        [imageViews addObject:imageView];
+    }
+    currentImage = pageIndex;
 }
 
 - (void)loadCachesAroundCurrentPage {
@@ -47,6 +79,7 @@
 
 - (void)dealloc {
     [imageURLs release];
+    [imageViews release];
     [scrollView release];
     [super dealloc];
 }

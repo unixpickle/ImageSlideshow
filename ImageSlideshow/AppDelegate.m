@@ -20,10 +20,18 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    NSMutableArray * urls = [NSMutableArray array];
+    for (int i = 1; i <= 4; i++) {
+        NSString * resourceName = [NSString stringWithFormat:@"slide%d", i];
+        NSURL * url = [[NSBundle mainBundle] URLForResource:resourceName withExtension:@"png"];
+        [urls addObject:url];
+    }
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
-    // Override point for customization after application launch.
+    slideshow = [[ANResourceSlideshow alloc] initWithImageURLs:urls];
+    [self.window addSubview:slideshow.view];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
+    
     return YES;
 }
 
