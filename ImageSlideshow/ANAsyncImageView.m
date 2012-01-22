@@ -11,7 +11,7 @@
 @interface ANAsyncImageView (Private)
 
 - (void)backgroundLoadThread:(NSURL *)url;
-- (void)loadComplete:(UIImage *)anImage;
+- (void)loadComplete:(id)anImage;
 
 @end
 
@@ -95,15 +95,20 @@
         // simulate a lag...
         [NSThread sleepForTimeInterval:1];
         NSData * imageData = [NSData dataWithContentsOfURL:url];
-        UIImage * theImage = [[UIImage alloc] initWithData:imageData];
+        CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)imageData);
+        CGImageRef loaded = CGImageCreateWithPNGDataProvider(provider, NULL, false, kCGRenderingIntentDefault);
+        CGDataProviderRelease(provider);
+        
         if ([[NSThread currentThread] isCancelled]) {
 #if !__has_feature(objc_arc)
-            [theImage release];
             [pool drain];
 #endif
+            CGImageRelease(loaded);
             return;
         }
-        [self performSelectorOnMainThread:@selector(loadComplete:) withObject:theImage waitUntilDone:NO];
+        id imageObj = (id)loaded;
+        [self performSelectorOnMainThread:@selector(loadComplete:) withObject:imageObj waitUntilDone:NO];
+        CGImageRelease(loaded);
 #if __has_feature(objc_arc)
     }
 #else
@@ -111,8 +116,9 @@
 #endif
 }
 
-- (void)loadComplete:(UIImage *)anImage {
-    [self setImage:anImage];
+- (void)loadComplete:(id)anImage {
+    CGImageRef loaded = (CGImageRef)anImage;
+    [self setImage:[UIImage imageWithCGImage:loaded]];
     if (anImage) {
         [activityIndicator stopAnimating];
     }
