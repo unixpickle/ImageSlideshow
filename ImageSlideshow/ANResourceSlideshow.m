@@ -18,6 +18,10 @@
 
 - (id)initWithImageURLs:(NSArray *)urls {
     if ((self = [super init])) {
+        initialBarStyle = [[UIApplication sharedApplication] statusBarStyle];
+        initialBarHidden = [[UIApplication sharedApplication] isStatusBarHidden];
+        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
+        
 #if !__has_feature(objc_arc)
         imageURLs = [urls retain];
 #else
@@ -132,6 +136,10 @@
 - (CGRect)frameForPageIndex:(NSUInteger)pageIndex {
     return CGRectMake(pageIndex * scrollView.frame.size.width, 0,
                       scrollView.frame.size.width, scrollView.frame.size.height);
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    NSLog(@"POOPY");
 }
 
 #pragma mark - Private -

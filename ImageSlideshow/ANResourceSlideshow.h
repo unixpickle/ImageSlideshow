@@ -18,6 +18,9 @@
     NSUInteger firstImageIndex;
     NSMutableArray * imageViews;
     BOOL wasStatusHidden;
+    
+    UIStatusBarStyle initialBarStyle;
+    BOOL initialBarHidden;
 }
 
 - (id)initWithImageURLs:(NSArray *)urls;

@@ -87,7 +87,11 @@
 #pragma mark - Threading -
 
 - (void)backgroundLoadThread:(NSURL *)url {
+#if !__has_feature(objc_arc)
+    NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+#else
     @autoreleasepool {
+#endif
         // simulate a lag...
         [NSThread sleepForTimeInterval:1];
         NSData * imageData = [NSData dataWithContentsOfURL:url];
@@ -95,11 +99,16 @@
         if ([[NSThread currentThread] isCancelled]) {
 #if !__has_feature(objc_arc)
             [theImage release];
+            [pool drain];
 #endif
             return;
         }
         [self performSelectorOnMainThread:@selector(loadComplete:) withObject:theImage waitUntilDone:NO];
+#if __has_feature(objc_arc)
     }
+#else
+    [pool drain];
+#endif
 }
 
 - (void)loadComplete:(UIImage *)anImage {
