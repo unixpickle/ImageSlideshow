@@ -37,6 +37,16 @@
         imageViews = [[NSMutableArray alloc] initWithCapacity:5];
         [self.view addSubview:scrollView];
         
+        navigationBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, 44)];
+        [navigationBar setBarStyle:UIBarStyleBlackTranslucent];
+        UINavigationItem * item = [[UINavigationItem alloc] initWithTitle:@"Slideshow"];
+        [navigationBar setItems:[NSArray arrayWithObject:item]];
+        doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneSlideshow:)];
+        item.rightBarButtonItem = doneButton;
+        isShowingControls = NO;
+        
+        self.view.backgroundColor = [UIColor blackColor];
+        
         [self resetToPage:0];
     }
     return self;
@@ -115,6 +125,12 @@
     }
 }
 
+- (void)doneSlideshow:(id)sender {
+    [[self presentingViewController] dismissModalViewControllerAnimated:YES];
+    [[UIApplication sharedApplication] setStatusBarStyle:initialBarStyle];
+    [[UIApplication sharedApplication] setStatusBarHidden:initialBarHidden];
+}
+
 - (void)dealloc {
     [imageURLs release];
     [imageViews release];
@@ -135,6 +151,33 @@
 
 - (void)scrollViewTapped:(UIScrollView *)aScrollView {
     // show or hide controls here
+    if (!isShowingControls) {
+        isShowingControls = YES;
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent];
+        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+        [scrollView setFrame:CGRectMake(0, 20, 320, 460)];
+        [navigationBar setAlpha:0];
+        [self.view addSubview:navigationBar];
+        [UIView animateWithDuration:0.35 animations:^ {
+            [navigationBar setAlpha:1];
+        }];
+    } else {
+        isShowingControls = NO;
+        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+        [scrollView setFrame:CGRectMake(0, 0, 320, 480)];
+        [UIView animateWithDuration:0.35 animations:^ {
+            [navigationBar setAlpha:0];
+        } completion:^(BOOL isDone) {
+            if (isDone) {
+                [navigationBar removeFromSuperview];
+            }
+        }];
+    }
+    CGSize size = scrollView.frame.size;
+    [scrollView setContentSize:CGSizeMake([imageURLs count] * size.width, size.height)];
+    for (NSUInteger i = 0; i < [imageViews count]; i++) {
+        [[imageViews objectAtIndex:i] setFrame:[self frameForPageIndex:(firstImageIndex + i)]];
+    }
 }
 
 - (CGRect)frameForPageIndex:(NSUInteger)pageIndex {

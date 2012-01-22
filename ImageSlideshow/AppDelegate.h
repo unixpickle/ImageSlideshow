@@ -11,6 +11,7 @@
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate> {
     ANResourceSlideshow * slideshow;
+    UIViewController * mainVC;
 }
 
 @property (strong, nonatomic) UIWindow * window;

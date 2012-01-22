@@ -22,6 +22,10 @@
     
     UIStatusBarStyle initialBarStyle;
     BOOL initialBarHidden;
+    
+    UINavigationBar * navigationBar;
+    UIBarButtonItem * doneButton;
+    BOOL isShowingControls;
 }
 
 - (id)initWithImageURLs:(NSArray *)urls;
@@ -29,5 +33,7 @@
 - (CGRect)frameForPageIndex:(NSUInteger)pageIndex;
 - (void)resetToPage:(NSUInteger)pageIndex;
 - (void)loadCachesAroundCurrentPage;
+
+- (void)doneSlideshow:(id)sender;
 
 @end

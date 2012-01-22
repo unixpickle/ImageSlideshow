@@ -69,10 +69,17 @@
     [self setNeedsDisplay];
 }
 
+- (void)setFrame:(CGRect)frame {
+    [super setFrame:frame];
+    [self setNeedsDisplay];
+}
+
 - (void)drawRect:(CGRect)rect {
     [super drawRect:rect];
     CGContextClearRect(UIGraphicsGetCurrentContext(), self.bounds);
-    [image drawInRect:self.bounds];
+    CGFloat scale = self.bounds.size.width / image.size.width;
+    CGFloat height = image.size.height * scale;
+    [image drawInRect:CGRectMake(0, self.bounds.size.height - height, self.bounds.size.width, height)];
 }
 
 #if !__has_feature(objc_arc)
@@ -93,15 +100,24 @@
     @autoreleasepool {
 #endif
         // simulate a lag...
-        [NSThread sleepForTimeInterval:1];
+        // [NSThread sleepForTimeInterval:1];
         NSData * imageData = [NSData dataWithContentsOfURL:url];
 #if !__has_feature(objc_arc)
         CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)imageData);
 #else
         CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)imageData);
 #endif
-        CGImageRef loaded = CGImageCreateWithPNGDataProvider(provider, NULL, false, kCGRenderingIntentDefault);
+        CGImageRef loaded = NULL;
+        if ([[url pathExtension] caseInsensitiveCompare:@"png"] == NSOrderedSame) {
+            loaded = CGImageCreateWithPNGDataProvider(provider, NULL, false, kCGRenderingIntentDefault);
+        } else {
+            loaded = CGImageCreateWithJPEGDataProvider(provider, NULL, false, kCGRenderingIntentDefault);
+        }
         CGDataProviderRelease(provider);
+        
+        // TODO: try creating a bitmap context here and drawing the image
+        // as to flush any caches or whatever may be causing the ImageIO
+        // error in the console.
         
         if ([[NSThread currentThread] isCancelled]) {
 #if !__has_feature(objc_arc)
