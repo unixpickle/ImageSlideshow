@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "ANAsyncImageView.h"
+#import "TapScrollView.h"
 
 @interface ANResourceSlideshow : UIViewController <UIScrollViewDelegate> {
     NSArray * imageURLs;
@@ -18,6 +19,9 @@
     NSUInteger firstImageIndex;
     NSMutableArray * imageViews;
     BOOL wasStatusHidden;
+    
+    UIStatusBarStyle initialBarStyle;
+    BOOL initialBarHidden;
 }
 
 - (id)initWithImageURLs:(NSArray *)urls;

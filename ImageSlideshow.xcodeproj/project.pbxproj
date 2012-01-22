@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA4017E614CB8A4D0087D914 /* TapScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4017E514CB8A4D0087D914 /* TapScrollView.m */; };
 		FA83CD0314CB7E4E0042B21D /* slide7.png in Resources */ = {isa = PBXBuildFile; fileRef = FA83CD0014CB7E4E0042B21D /* slide7.png */; };
 		FA83CD0414CB7E4E0042B21D /* slide6.png in Resources */ = {isa = PBXBuildFile; fileRef = FA83CD0114CB7E4E0042B21D /* slide6.png */; };
 		FA83CD0514CB7E4E0042B21D /* slide5.png in Resources */ = {isa = PBXBuildFile; fileRef = FA83CD0214CB7E4E0042B21D /* slide5.png */; };
@@ -25,6 +26,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FA4017E414CB8A4D0087D914 /* TapScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TapScrollView.h; sourceTree = "<group>"; };
+		FA4017E514CB8A4D0087D914 /* TapScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TapScrollView.m; sourceTree = "<group>"; };
 		FA83CD0014CB7E4E0042B21D /* slide7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = slide7.png; sourceTree = "<group>"; };
 		FA83CD0114CB7E4E0042B21D /* slide6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = slide6.png; sourceTree = "<group>"; };
 		FA83CD0214CB7E4E0042B21D /* slide5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = slide5.png; sourceTree = "<group>"; };
@@ -98,6 +101,8 @@
 				FA85A67D14CB31290018F18D /* ANResourceSlideshow.m */,
 				FA85A67F14CB38DB0018F18D /* ANAsyncImageView.h */,
 				FA85A68014CB38DB0018F18D /* ANAsyncImageView.m */,
+				FA4017E414CB8A4D0087D914 /* TapScrollView.h */,
+				FA4017E514CB8A4D0087D914 /* TapScrollView.m */,
 				FA85A66414CB27010018F18D /* Supporting Files */,
 			);
 			path = ImageSlideshow;
@@ -193,6 +198,7 @@
 				FA85A66E14CB27010018F18D /* AppDelegate.m in Sources */,
 				FA85A67E14CB31290018F18D /* ANResourceSlideshow.m in Sources */,
 				FA85A68114CB38DB0018F18D /* ANAsyncImageView.m in Sources */,
+				FA4017E614CB8A4D0087D914 /* TapScrollView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

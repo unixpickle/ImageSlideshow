@@ -13,6 +13,7 @@
     UIImage * image;
     
     NSThread * backgroundThread;
+    CGImageRef imageRef;
 }
 
 @property (nonatomic, strong) UIImage * image;

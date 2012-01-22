@@ -18,13 +18,17 @@
 
 - (id)initWithImageURLs:(NSArray *)urls {
     if ((self = [super init])) {
+        initialBarStyle = [[UIApplication sharedApplication] statusBarStyle];
+        initialBarHidden = [[UIApplication sharedApplication] isStatusBarHidden];
+        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
+        
 #if !__has_feature(objc_arc)
         imageURLs = [urls retain];
 #else
         imageURLs = urls;
 #endif
         CGSize size = self.view.bounds.size;
-        scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
+        scrollView = [[TapScrollView alloc] initWithFrame:self.view.bounds];
         [scrollView setContentSize:CGSizeMake([urls count] * size.width, size.height)];
         [scrollView setPagingEnabled:YES];
         [scrollView setShowsHorizontalScrollIndicator:NO];
@@ -127,6 +131,10 @@
         currentPage = pageIndex;
         [self loadCachesAroundCurrentPage];
     }
+}
+
+- (void)scrollViewTapped:(UIScrollView *)aScrollView {
+    // show or hide controls here
 }
 
 - (CGRect)frameForPageIndex:(NSUInteger)pageIndex {

@@ -11,7 +11,7 @@
 @interface ANAsyncImageView (Private)
 
 - (void)backgroundLoadThread:(NSURL *)url;
-- (void)loadComplete:(UIImage *)anImage;
+- (void)loadComplete:(id)anImage;
 
 @end
 
@@ -87,26 +87,50 @@
 #pragma mark - Threading -
 
 - (void)backgroundLoadThread:(NSURL *)url {
+#if !__has_feature(objc_arc)
+    NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+#else
     @autoreleasepool {
+#endif
         // simulate a lag...
         [NSThread sleepForTimeInterval:1];
         NSData * imageData = [NSData dataWithContentsOfURL:url];
-        UIImage * theImage = [[UIImage alloc] initWithData:imageData];
+#if !__has_feature(objc_arc)
+        CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)imageData);
+#else
+        CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)imageData);
+#endif
+        CGImageRef loaded = CGImageCreateWithPNGDataProvider(provider, NULL, false, kCGRenderingIntentDefault);
+        CGDataProviderRelease(provider);
+        
         if ([[NSThread currentThread] isCancelled]) {
 #if !__has_feature(objc_arc)
-            [theImage release];
+            [pool drain];
 #endif
+            CGImageRelease(loaded);
             return;
         }
-        [self performSelectorOnMainThread:@selector(loadComplete:) withObject:theImage waitUntilDone:NO];
-#if !__has_feature(objc_arc)
-        [theImage release];
+#if __has_feature(objc_arc)
+        id imageObj = (__bridge id)loaded;
+#else
+        id imageObj = (id)loaded;        
 #endif
+        [self performSelectorOnMainThread:@selector(loadComplete:) withObject:imageObj waitUntilDone:NO];
+        CGImageRelease(loaded);
+#if __has_feature(objc_arc)
     }
+#else
+    [pool drain];
+#endif
 }
 
-- (void)loadComplete:(UIImage *)anImage {
-    [self setImage:anImage];
+- (void)loadComplete:(id)anImage {
+#if __has_feature(objc_arc)
+    CGImageRef loaded = (__bridge CGImageRef)anImage;
+#else
+    CGImageRef loaded = (CGImageRef)anImage;
+#endif
+    [self setImage:[UIImage imageWithCGImage:loaded]];
     if (anImage) {
         [activityIndicator stopAnimating];
     }
