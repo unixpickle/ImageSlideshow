@@ -95,7 +95,11 @@
         // simulate a lag...
         [NSThread sleepForTimeInterval:1];
         NSData * imageData = [NSData dataWithContentsOfURL:url];
+#if !__has_feature(objc_arc)
         CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)imageData);
+#else
+        CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)imageData);
+#endif
         CGImageRef loaded = CGImageCreateWithPNGDataProvider(provider, NULL, false, kCGRenderingIntentDefault);
         CGDataProviderRelease(provider);
         
@@ -106,7 +110,11 @@
             CGImageRelease(loaded);
             return;
         }
-        id imageObj = (id)loaded;
+#if __has_feature(objc_arc)
+        id imageObj = (__bridge id)loaded;
+#else
+        id imageObj = (id)loaded;        
+#endif
         [self performSelectorOnMainThread:@selector(loadComplete:) withObject:imageObj waitUntilDone:NO];
         CGImageRelease(loaded);
 #if __has_feature(objc_arc)
@@ -117,7 +125,11 @@
 }
 
 - (void)loadComplete:(id)anImage {
+#if __has_feature(objc_arc)
+    CGImageRef loaded = (__bridge CGImageRef)anImage;
+#else
     CGImageRef loaded = (CGImageRef)anImage;
+#endif
     [self setImage:[UIImage imageWithCGImage:loaded]];
     if (anImage) {
         [activityIndicator stopAnimating];
