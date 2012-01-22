@@ -28,7 +28,7 @@
         imageURLs = urls;
 #endif
         CGSize size = self.view.bounds.size;
-        scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
+        scrollView = [[TapScrollView alloc] initWithFrame:self.view.bounds];
         [scrollView setContentSize:CGSizeMake([urls count] * size.width, size.height)];
         [scrollView setPagingEnabled:YES];
         [scrollView setShowsHorizontalScrollIndicator:NO];
@@ -133,13 +133,13 @@
     }
 }
 
+- (void)scrollViewTapped:(UIScrollView *)aScrollView {
+    // show or hide controls here
+}
+
 - (CGRect)frameForPageIndex:(NSUInteger)pageIndex {
     return CGRectMake(pageIndex * scrollView.frame.size.width, 0,
                       scrollView.frame.size.width, scrollView.frame.size.height);
-}
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    NSLog(@"POOPY");
 }
 
 #pragma mark - Private -

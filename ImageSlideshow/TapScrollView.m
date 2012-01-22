@@ -12,7 +12,9 @@
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     if (!self.dragging) {
-        [self.nextResponder touchesEnded:touches withEvent:event];
+        if ([self.delegate respondsToSelector:@selector(scrollViewTapped:)]) {
+            [(id)self.delegate performSelector:@selector(scrollViewTapped:) withObject:self];
+        }
     } else {
         [super touchesEnded:touches withEvent:event];
     }

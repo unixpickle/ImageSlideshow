@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "ANAsyncImageView.h"
+#import "TapScrollView.h"
 
 @interface ANResourceSlideshow : UIViewController <UIScrollViewDelegate> {
     NSArray * imageURLs;
